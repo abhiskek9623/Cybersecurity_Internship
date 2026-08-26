@@ -1,6 +1,4 @@
-# Linux Command Notes
-
-Notes on the basic Linux commands I keep needing to look up. Mostly file system navigation, permissions, package management, and networking. Writing these down so I stop googling the same thing every few months.
+Linux Basic Commands
 
 ## File System Navigation
 
@@ -157,22 +155,4 @@ traceroute google.com
 
 Useful when ping works but something still feels slow - traceroute can show you where along the path the delay is actually happening. On some systems it's `tracepath` instead if traceroute isn't installed by default.
 
----
 
-## Quick cheat sheet
-
-| Task | Command |
-|---|---|
-| Where am I | `pwd` |
-| List files | `ls -la` |
-| Change dir | `cd path` |
-| Fix permissions | `chmod 755 file` |
-| Change owner | `chown user:group file` |
-| Install package | `sudo apt install name` |
-| Update package list | `sudo apt update` |
-| Show IP info | `ifconfig` or `ip a` |
-| Test connectivity | `ping -c 4 host` |
-| Check open ports | `netstat -tuln` or `ss -tuln` |
-| Trace network path | `traceroute host` |
-
-Will keep adding to this as I run into more stuff worth remembering.
