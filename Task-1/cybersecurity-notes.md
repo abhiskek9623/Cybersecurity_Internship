@@ -1,7 +1,3 @@
-# Cybersecurity Notes
-
-Personal notes on the CIA triad, common threats, and attack vectors. Mostly for my own reference, sharing here in case it helps someone else studying the same stuff.
-
 ## The CIA Triad
 
 Basically every security concept ties back to one of these three things.
@@ -115,13 +111,3 @@ Sometimes the risk is already inside the building/network.
 
 Hardest category to defend against because these people already have legitimate access. Least privilege access, monitoring for unusual behavior, and solid offboarding (revoking access the day someone leaves, not a week later) all help.
 
----
-
-## Quick takeaways
-
-- CIA triad = confidentiality, integrity, availability - basically what every control is trying to protect
-- Most threats above break one or more of those three
-- A lot of real-world breaches start with a person, not a technical flaw - phishing and social engineering keep showing up because they work
-- Layered defense matters more than any single control - MFA + patching + backups + training together beat any one of them alone
-
-Might expand this later with actual lab notes / CTF writeups.
