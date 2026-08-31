@@ -178,4 +178,4 @@ Worth noting - RSA encryption like this only works on small messages (limited by
 | RSA encrypt small message | `openssl pkeyutl -encrypt -pubin -inkey pub.pem -in msg.txt -out msg.enc` |
 | RSA decrypt | `openssl pkeyutl -decrypt -inkey key.pem -in msg.enc -out msg.txt` |
 
-Next thing I want to dig into is actually setting up a local test server with the self-signed cert and watching the handshake happen in Wireshark instead of just reading about it.
+
