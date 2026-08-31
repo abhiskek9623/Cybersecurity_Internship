@@ -1,22 +1,20 @@
-# Cybersecurity_Internship
-
-
 # Cybersecurity & Ethical Hacking Internship
 
-This repository contains my hands-on work and learning outcomes from a **60-day Cybersecurity & Ethical Hacking Internship**. The project focuses on practical cybersecurity skills including **Linux, networking, reconnaissance, Nmap, Wireshark, vulnerability assessment, web application security, penetration testing, system hardening, and incident response**.
+This repository contains my work and learning from a 60-day Cybersecurity & Ethical Hacking Internship. It covers the fundamentals of cybersecurity along with practical work in Linux, networking, reconnaissance, network scanning, vulnerability assessment, web application security, penetration testing, system hardening, and incident response.
 
-The repository includes **security notes, commands, lab exercises, vulnerability analysis, exploitation demonstrations, mitigation techniques, and project documentation** performed in controlled environments using tools such as **Kali Linux, Metasploit, Burp Suite, Nmap, Wireshark, OpenVAS, and Netcat**.
+The repository includes my notes, commands, lab exercises, vulnerability analysis, exploitation demonstrations, mitigation techniques, and project documentation. I worked with tools such as Kali Linux, Nmap, Wireshark, Burp Suite, Metasploit, OpenVAS, and Netcat in controlled lab environments.
 
-### Key Skills
+## Skills Covered
 
-* Cybersecurity & Ethical Hacking
-* Linux & Networking
-* Network Reconnaissance & Scanning
+* Cybersecurity and Ethical Hacking
+* Linux and Networking
+* Reconnaissance and Network Scanning
 * Vulnerability Assessment
-* Web Application Security & OWASP Top 10
+* Web Application Security and OWASP Top 10
 * Penetration Testing
 * System Hardening
-* Security Analysis & Incident Response
-* Security Tools & Practical Lab Experience
+* Security Analysis and Incident Response
+* Practical use of Cybersecurity Tools
 
-> **Note:** All security testing and exploitation activities were performed in controlled, authorized lab environments for educational purposes.
+NOTE:> All security testing was performed in controlled and authorized lab environments for educational purposes.
+
