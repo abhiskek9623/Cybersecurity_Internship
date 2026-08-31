@@ -165,13 +165,3 @@ Connect to a port and see what the service announces about itself right away (SS
 
 ---
 
-## Quick reference
-
-| Tool | What it's for | Command to remember |
-|---|---|---|
-| Wireshark | Inspect traffic packet by packet | `tshark -i eth0 -f "port 80"` |
-| Nmap | Discover hosts, ports, services | `nmap -sV -sC -p- target` |
-| Burp Suite | Intercept/modify web traffic | proxy on `127.0.0.1:8080`, browse, check HTTP History |
-| Netcat | Quick raw connections, listeners, transfers | `nc -zv target 20-100` |
-
-These four cover a lot of ground together - Wireshark for what's actually on the wire, Nmap for what's out there and open, Burp for poking at a web app specifically, Netcat for quick manual checks when you don't want to open anything heavier.
