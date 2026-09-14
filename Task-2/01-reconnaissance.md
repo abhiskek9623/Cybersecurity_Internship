@@ -273,8 +273,3 @@ Host: 192.168.112.133
 
 ---
 
-## Key Takeaways
-
-- Always start with **passive recon** to build a picture of the target with zero footprint before moving to active techniques.
-- Active recon (ping, Nmap, netcat) generates traffic on the target network and can be logged, so it should only be performed in an authorized lab environment or with explicit written permission.
-- Information gathered here (IP addresses, live hosts, service banners, DNS records) directly feeds into the next phase: **Port & Service Scanning** (see `02-scanning.md`).
