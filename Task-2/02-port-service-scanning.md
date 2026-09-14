@@ -125,31 +125,7 @@ Remote desktop access. VNC protocol 3.3 is old enough that some implementations 
 | 3306/5432 | MySQL/PostgreSQL | Old versions, check default creds |
 | 5900 | VNC | Weak/no auth in old protocol versions |
 
-Basically the entire box is a checklist of "what not to leave running on a production server" — which is exactly the point of Metasploitable2 as a training target.
 
 ---
 
-## 5. Follow-Up Commands
 
-Some natural next steps after this initial scan, before moving into vulnerability scanning:
-
-```bash
-# Full port range instead of just the default top 1000
-nmap -p- 192.168.112.133
-
-# Run default Nmap scripts against the discovered services
-nmap -sC -sV 192.168.112.133
-
-# Check for the vsftpd 2.3.4 backdoor specifically
-nmap --script ftp-vsftpd-backdoor -p 21 192.168.112.133
-
-# Enumerate SMB shares
-enum4linux 192.168.112.133
-smbclient -L //192.168.112.133 -N
-```
-
----
-
-## 6. Takeaway
-
-This single scan already gives a strong picture of the attack surface: a mix of ancient, unpatched services, plaintext protocols, and at least one deliberately planted backdoor. In a real engagement, this output alone would be enough to prioritize which services to dig into first (FTP and the bindshell being the obvious starting points here) before moving on to the vulnerability scanning phase with OpenVAS/Nessus.
