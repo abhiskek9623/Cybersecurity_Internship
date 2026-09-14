@@ -132,6 +132,3 @@ sudo iptables -F                                    # flush all rules in the cha
 
 ---
 
-## Takeaway
-
-The interesting part of this step wasn't writing the rules — that's two lines. It was seeing the actual before/after in Nmap: the same port, same target, same scan command, but the result flips from `open` to `filtered` the moment the DROP rule goes in. That's the whole point of a firewall from an attacker's perspective — it doesn't have to fix the vulnerable service behind the port, it just needs to stop the traffic from reaching it in the first place.
