@@ -149,9 +149,3 @@ That visible difference — script running vs. script printed as harmless text �
 
 ---
 
-## Key Takeaways
-
-- Stored XSS is more dangerous than Reflected because it doesn't need a victim to click anything — it just sits on the page waiting.
-- Reflected XSS relies on tricking someone into clicking a crafted link, usually via phishing.
-- Blacklisting dangerous keywords/characters is not a real fix — it's almost always bypassable.
-- The actual fix is output encoding (`htmlspecialchars()` or equivalent) at the point where user input gets displayed, combined with a Content Security Policy as a second layer of defense.
