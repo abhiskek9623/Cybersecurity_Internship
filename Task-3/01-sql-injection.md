@@ -48,10 +48,6 @@ SELECT first_name, last_name FROM users WHERE user_id = '1' UNION SELECT user, p
 
 ## 3. Result
 
-Screenshot from the actual test run:
-
-![SQL Injection - UNION SELECT dumping usernames and password hashes](./screenshots/sql-injection-union.png)
-
 Output returned:
 
 ```
@@ -162,9 +158,4 @@ Result: no output, or a "no matching record" style response — the injected SQL
 
 ---
 
-## Key Takeaways
 
-- SQLi happens when user input is concatenated into a query string instead of passed as a parameter.
-- `UNION SELECT` is one of the most direct ways to pull data from a different table than the one the page intended to query — it just requires matching the column count.
-- Password hashes alone aren't a safe fallback — unsalted MD5 (like DVWA uses here) can be cracked in seconds with a common wordlist.
-- The fix is architectural, not cosmetic: prepared statements/parameterized queries, not input blacklisting, escaping tricks, or "just remove quotes."
