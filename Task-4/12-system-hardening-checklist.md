@@ -178,21 +178,7 @@ Every open port represents something that has to be defended; a port that isn't 
 
 ---
 
-## 5. Documenting This for Your Report/GitHub
 
-Capture for each of the three sections above:
-1. The original Nmap scan (from Task 2) as the "before" baseline.
-2. Terminal output of each `service stop` / `update-rc.d remove` command.
-3. The `iptables -L -v` output showing the final rule set.
-4. A fresh Nmap scan as the "after" comparison.
 
-This set of screenshots, laid out as a before/after pair, is strong evidence for both the written report and a LinkedIn-style summary post — "20 open ports down to 1" is a clean, visual result that communicates the value of hardening without needing much explanation.
 
----
 
-## Key Takeaways
-
-- Patching, firewalling, and disabling unused services are three *different* controls addressing different failure modes — patching fixes known vulnerabilities in software you still need running, firewalling limits reachability, and disabling removes the exposure entirely. A mature hardening pass applies all three rather than treating any one as sufficient alone.
-- An unpatchable system (dead repos, EOL OS) is a finding in its own right, not just a dead end — the correct recommendation at that point shifts from "apply patches" to "decommission or upgrade the OS," with firewalling/disabling serving as compensating controls in the meantime.
-- Default-deny (block everything, explicitly allow only what's needed) is a stronger and more maintainable firewall posture than writing individual block rules for each bad port found during a scan.
-- The clearest way to prove hardening worked is the same technique used throughout this whole task: run the identical Nmap scan before and after, and let the shrinking port list speak for itself.
