@@ -19,9 +19,7 @@ Navigating the menu:
 3. **3) Credential Harvester Attack Method**
 4. **2) Site Cloner**
 
-At the Site Cloner step, SEToolkit asks for the IP to host the cloned page on (the Kali machine's own IP, so the fake page is actually reachable) and which real site to clone. A built-in template option is also available — the Google login template was selected here rather than manually cloning a live URL:
-
-![SEToolkit template selection — choosing the Google credential harvester template](./screenshots/set-template-selection.png)
+At the Site Cloner step, SEToolkit asks for the IP to host the cloned page on (the Kali machine's own IP, so the fake page is actually reachable) and which real site to clone. A built-in template option is also available — the Google login template was selected here rather than manually cloning a live URL.
 
 The tool confirms the clone is in progress ("Cloning the website: http://www.google.com") and then starts the harvester listener on port 80, warning that the technique works best when real username/password field names are detected, but will capture all POST data from the page regardless.
 
@@ -29,9 +27,7 @@ The tool confirms the clone is in progress ("Cloning the website: http://www.goo
 
 ## 2. The Cloned Page, From the "Victim's" Side
 
-Browsing to the Kali machine's IP from another tab shows a pixel-for-pixel clone of Google's actual sign-in page — same layout, same branding, same form fields:
-
-![Cloned Google sign-in page served from the attacker's own Kali IP](./screenshots/cloned-google-login.png)
+Browsing to the Kali machine's IP from another tab shows a pixel-for-pixel clone of Google's actual sign-in page — same layout, same branding, same form fields.
 
 The only thing that gives it away, if you know to look, is the address bar: `192.168.112.135` instead of `accounts.google.com`. Visually, there's nothing else distinguishing it from the real thing — which is exactly the point of this exercise. A real phishing page would typically pair this clone with a lookalike domain (e.g. `accoounts-google-login.com`) to make even the address bar harder to catch at a glance.
 
@@ -41,9 +37,9 @@ Test credentials were submitted into the cloned form (`victim@gmail.com` / a pla
 
 ## 3. What the Harvester Captured
 
-The moment the form was submitted, SEToolkit's listener intercepted the POST request and printed every parameter it contained directly to the terminal in real time:
+The moment the form was submitted, SEToolkit's listener intercepted the POST request and printed every parameter it contained directly to the terminal in real time.
 
-![SEToolkit harvester output showing captured credentials and full POST data](./screenshots/harvester-captured-creds.png)
+
 
 ```
 192.168.112.135 - - [10/Oct/2026 16:10:25] "GET / HTTP/1.1" 200 -
